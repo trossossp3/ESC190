@@ -1,8 +1,10 @@
 #include <math.h>
 #include <string.h>
 double split_bill(double base_amount , double tax_rate , double tip_rate , int num_people){
-    double total_pay =  base_amount + tax_rate*base_amount + tip_rate*base_amount;
-    return total_pay/num_people;
+    double tax_total=  base_amount + tax_rate*base_amount;
+    double tip_total = tax_total + tax_total*tip_rate;
+    double total = round(tip_total*100)/100;
+    return tip_total/num_people;
 }
 
 
@@ -21,13 +23,20 @@ int sandy_eats(char menu_item []){
     char *l;
     char *fish;
     j = strchr(menu_item, 'j');
+    k = strchr(menu_item, 'k');
+    l = strchr(menu_item, 'l');
+    fish = strstr(menu_item, "fish");
     // k = strstr(menu_item, "k");
     // l = strstr(menu_item, "l");
     // fish = strstr(menu_item,"fish");
-    if(j == NULL){
+    if(j == NULL && k == NULL && l==NULL && fish == NULL){
         return 1;
     }else{
         return 0;
     }
 
+}
+
+void imagine_fish(char thing []){
+    thing = strcat(thing, "fish");
 }

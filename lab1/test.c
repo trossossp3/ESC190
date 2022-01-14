@@ -1,14 +1,9 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 int main(){
-    char str[] = "cat in hat";
-    char subStr[] = "an";
-    printf("%s\n",str);
-    char *point;
-    point = strstr(str,"cat");
-    printf("The substring is: %s\n", point);
-    if(point == NULL){
-        printf("Hello");
-    }
+    double x = 56.123;
+    double rounded = round(x*100)/100;
+    printf("%f", rounded);  
     return 0;
 }
