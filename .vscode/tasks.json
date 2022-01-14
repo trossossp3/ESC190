@@ -1,6 +1,7 @@
 {
 	"version": "2.0.0",
 	"tasks": [
+		
 		{
 			"type": "cppbuild",
 			"label": "C/C++: gcc build active file",
@@ -9,7 +10,9 @@
 				"-g",
 				"${file}",
 				"-o",
-				"${fileDirname}/${fileBasenameNoExtension}"
+				"-lm",
+				"${fileDirname}/${fileBasenameNoExtension}",
+				
 			],
 			"options": {
 				"cwd": "${fileDirname}"
