@@ -22,13 +22,11 @@ int sandy_eats(char menu_item []){
     char *k;
     char *l;
     char *fish;
-    j = strchr(menu_item, 'j');
+    j = strchr(menu_item, 'j'); //returns pointer to first letter in string or null
     k = strchr(menu_item, 'k');
     l = strchr(menu_item, 'l');
     fish = strstr(menu_item, "fish");
-    // k = strstr(menu_item, "k");
-    // l = strstr(menu_item, "l");
-    // fish = strstr(menu_item,"fish");
+   
     if(j == NULL && k == NULL && l==NULL && fish == NULL){
         return 1;
     }else{
