@@ -6,7 +6,7 @@ int main()
 {
     // Testing Part 1
     
-    double test_p1 = split_bill(50.02, 0.13, 0.15, 2);
+    double test_p1 = split_bill(1.30, 0.00, 0.00, 8);
     printf("The split will be: $%.2f.\n", (test_p1));
     // $32 .50
     //Add more tests here ...

@@ -1,10 +1,18 @@
 #include <math.h>
 #include <string.h>
+#include <stdio.h>
 double split_bill(double base_amount , double tax_rate , double tip_rate , int num_people){
     double tax_total=  base_amount + tax_rate*base_amount;
     double tip_total = tax_total + tax_total*tip_rate;
     double total = round(tip_total*100)/100;
-    return tip_total/num_people;
+    double per_person =  round(total/num_people *100)/100;
+    printf("%f\n", per_person *num_people);
+    printf("%f\n", tip_total);
+    if (per_person * num_people < tip_total){
+        per_person +=0.01;
+    }
+    
+    return per_person;
 }
 
 
@@ -36,5 +44,5 @@ int sandy_eats(char menu_item []){
 }
 
 void imagine_fish(char thing []){
-    thing = strcat(thing, "fish");
+    strcat(thing, "fish");
 }
