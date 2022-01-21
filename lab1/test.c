@@ -2,8 +2,14 @@
 #include <string.h>
 #include <math.h>
 int main(){
-    double x = 56.123;
-    double rounded = round(x*100)/100;
-    printf("%f", rounded);  
-    return 0;
+    char test[] = " a  s";
+    printf("%d", strlen(test));
+    int count = 0;
+    for (int i =0; i<strlen(test); i++){
+        if(test[i]!=' '){
+            count++;
+        }
+    }
+
+    printf("%i", count);
 }

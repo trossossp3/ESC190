@@ -17,13 +17,13 @@ int main()
     // Should be $50 .00
 
     // Testing Part 3
-    char test_food[10] = "a";
+    char test_food[] = "JKL rhinocerous";
     char test[20] = "hi";
 
     int test_p3 = sandy_eats(test_food);
     if (test_p3 == 0)
     {
-        printf("Sandy would NOT eat0 '%s '.\n", test_food);
+        printf("Sandy would NOT eat '%s'.\n", test_food);
     }
     else
     {
