@@ -1,1 +1,3 @@
 when compiling with -g valgrind has line numbers on errors
+scp Z:\Dev\ESC190\lab2\lab2_task4.c rossostr@remote.ecf.utoronto.ca:/u/a/rossostr/Documents/Labs/lab2
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./task  

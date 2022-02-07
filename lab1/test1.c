@@ -8,14 +8,14 @@ int main()
     *(ptr + 1) = 2;
     *(ptr) = 3;
     int l = 2;
-    append(&ptr,&l,98);
-    printf("%d",ptr[2]);
-    printf("%d",l);
+    append(ptr,&l,98);
+    printf("%d\n",ptr[2]);
+    printf("%d\n",l);
 }
-void append(int **x, int *n, int val)
+void append(int *x, int *n, int val)
 {
-    *x = (int *)realloc(*x, (*n + 1) * sizeof(int));
-	*(*x + *n) = val;
+    x = (int *)realloc(x, (*n + 1) * sizeof(int));
+	*(x+*n) = val;
     *n = *n+1;
 	
 

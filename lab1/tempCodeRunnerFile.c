@@ -1,3 +1,3 @@
-(per_person * num_people < tip_total){
-    //     per_person = 10.0;
-    // }
+
+    test2->value=67;
+    struct test **test3;
