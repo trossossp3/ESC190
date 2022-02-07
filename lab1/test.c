@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-int main(){
-    char test[] = " a  s";
-    printf("%d", strlen(test));
-    int count = 0;
-    for (int i =0; i<strlen(test); i++){
-        if(test[i]!=' '){
-            count++;
-        }
-    }
+struct test
+{
+    int value;
+};
+int main()
+{
 
-    printf("%i", count);
+    struct test test1;
+    test1.value = 10;
+    struct test *test2;
+    test2->value=67;
+    
+    
 }
