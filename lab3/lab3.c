@@ -25,40 +25,48 @@ void remove_request(struct party_node **head){
 
 //Sort party item requests - in place?
 void make_sorted(struct party_node **head){
-    print_list(*head);
-    struct party_node* curr =  NULL;
-    struct party_node* prev =  NULL;
-    int sort =0;
+    int swapped;
+    struct party_node *curr;
+     
 
-    do{
+    if (*head == NULL)
+        return;
+  
+    do
+    {
+        swapped = 0;
         curr = *head;
-        sort = 0;
-        while(curr->next !=NULL){
-            if(curr->price < curr->next->price){
+  
+        while (curr->next != NULL)
+        {
+            if (curr->price < curr->next->price)
+            { 
                
-                if (curr == *head){ //if the current node is the first node
-                    printf("hello");
-                    struct party_node* temp =  NULL;
-                    temp = curr->next;
-                    *head = temp;
-                    print_list(*head);
-                    temp->next = curr;
-                    // print_list(*head);
-                    curr->next =temp->next;
-                    
-                   
-                    sort =1;
-                }
-                
+                swap(curr, curr->next);
+                swapped = 1;
             }
             curr = curr->next;
-
         }
-        prev = curr;
        
     }
-     while(sort);
+    while (swapped);
+}
+  
+/* function to swap data of two nodes a and b*/
+void swap(struct party_node *a, struct party_node *b)
+{
+    double temp = a->price;
+    a->price = b->price;
+    b->price = temp;
 
+    char* temp2 = a->item;
+    a->item = b->item;
+    b->item = temp2;
+
+    char* temp3 = a->ta;
+    a->ta = b->ta;
+    b->ta = temp3;
+  
 }
 
 //Trim list to fit the budget

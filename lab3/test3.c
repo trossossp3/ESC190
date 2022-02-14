@@ -11,12 +11,11 @@ int main(){
     printf("Adding the TA requests:\n");
     check_add = add_request(&head, "Speakers", 99.99, "Zoe");
     
-    check_add = add_request(&head, "Sushi", 2.88, "Ali");
+    check_add = add_request(&head, "Sushi", 2.898, "Ali");
     //Check add_request() return value
     
-    // print_list(head);
-    // remove_request(&head);
-    // remove_request(&head);
+    print_list(head);
+    
     make_sorted(&head);
     printf("bye");
     print_list(head);
