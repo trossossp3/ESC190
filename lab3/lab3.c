@@ -52,74 +52,50 @@ void remove_request(struct party_node **head)
 }
 
 // Sort party item requests - in place?
+int getCount(struct party_node** head){
+    int count = 0;
+    struct party_node* curr = *head;
+    while(curr!=NULL){
+        count++;
+        curr=curr->next;
+    }
+    return count;
+}
+struct party_node* swap(struct party_node* ptr1, struct party_node* ptr2)
+{
+    struct party_node* tmp = ptr2->next;
+    ptr2->next = ptr1;
+    ptr1->next = tmp;
+    return ptr2;
+}
 void make_sorted(struct party_node **head)
-{printf("\nsorting\n");
-    int swapped;
-    struct party_node *a;
-    struct party_node *b;
-    struct party_node *prev_a;
-    struct party_node *prev_b;
-
-    if (*head == NULL)
-        return;
-
-    do
+{
+    struct party_node** h;
+    int i, j, swapped;
+    int count = getCount(head);
+    for (i = 0; i <  count; i++)
     {
-        // printf("hello");
+  
+        h = head;
         swapped = 0;
-        a = *head;
-        b = a->next;
-        prev_a = NULL;
-        prev_b = a;
-        
-        while (b != NULL && a!=NULL)
+  
+        for (j = 0; j < count  - i -1; j++) 
         {
-            printf("\na price:%f\n", a->price);
-        printf("b price%f\n", b->price);
-            if (a->price < b->price)
+  
+            struct party_node* p1 = *h;
+            struct party_node* p2 = p1->next;
+  
+            if (p1->price < p2->price)
             {
-                
-              swap(head,a,b,prev_a,prev_b);
-              printf("\njust did swap\n");
-                printf("a price:%f\n", a->price);
-                printf("b price%f\n", b->price);
+                *h = swap(p1, p2);
                 swapped = 1;
             }
-            prev_a = a;
-            a = a->next;
-            b = b->next;
+  
+            h = &(*h)->next;
         }
-
-    } while (swapped);
-}
-
-void swap(struct party_node **head, struct party_node *a, struct party_node *b, struct party_node *a_prev, struct party_node *b_prev)
-{
-
-    if (a_prev == NULL)
-    {
-        *head = b;
+        if (swapped == 0)
+            break;
     }
-    else
-    {
-        a_prev->next = b;
-    }
-    if (b == NULL)
-    {
-        *head = a;
-    }
-    else
-    {
-        b_prev->next = a;
-    }
-
-    struct party_node *temp = b->next;
-    a->next = temp;
-    // printf("deep pain");
-    // a_prev->next = b;
-    // printf("on the edge");
-    b->next = a;
-    return;
 }
 
 // Trim list to fit the budget
