@@ -9,10 +9,30 @@ int add_request(struct party_node **head, char *item, double price, char *ta)
     }
 
     struct party_node *temp = (struct party_node *)malloc(sizeof(struct party_node));
-    temp->item = item;
-    temp->price = price;
-    temp->ta = ta;
+    int len_item = 0;
+    int len_ta = 0;
 
+    while (*(item + len_item) != '\0')
+    {
+        len_item++;
+    }
+    while (*(item + len_ta) != '\0')
+    {
+        len_ta++;
+    }
+    temp->ta = (char *)malloc(sizeof(char) * (len_ta + 1));
+    temp->item = (char *)malloc(sizeof(char) * (len_item + 1));
+
+    for (int i = 0; i < len_item + 1; i++)
+    {
+        temp->item[i] = item[i];
+    }
+    for (int i = 0; i < len_ta + 1; i++)
+    {
+        temp->ta[i] = ta[i];
+    }
+
+    temp->price = price;
     temp->next = *head;
     *head = temp;
     return 0;
@@ -24,52 +44,82 @@ int add_request(struct party_node **head, char *item, double price, char *ta)
 void remove_request(struct party_node **head)
 {
     struct party_node *temp = *head;
-    *head = (*head)->next;
+
+    free(temp->item);
+    free(temp->ta);
+    *head = (temp)->next;
     free(temp);
 }
 
 // Sort party item requests - in place?
 void make_sorted(struct party_node **head)
-{
+{printf("\nsorting\n");
     int swapped;
-    struct party_node *curr;
+    struct party_node *a;
+    struct party_node *b;
+    struct party_node *prev_a;
+    struct party_node *prev_b;
 
     if (*head == NULL)
         return;
 
     do
     {
+        // printf("hello");
         swapped = 0;
-        curr = *head;
-
-        while (curr->next != NULL)
+        a = *head;
+        b = a->next;
+        prev_a = NULL;
+        prev_b = a;
+        
+        while (b != NULL && a!=NULL)
         {
-            if (curr->price < curr->next->price)
+            printf("\na price:%f\n", a->price);
+        printf("b price%f\n", b->price);
+            if (a->price < b->price)
             {
-
-                swap(curr, curr->next);
+                
+              swap(head,a,b,prev_a,prev_b);
+              printf("\njust did swap\n");
+                printf("a price:%f\n", a->price);
+                printf("b price%f\n", b->price);
                 swapped = 1;
             }
-            curr = curr->next;
+            prev_a = a;
+            a = a->next;
+            b = b->next;
         }
 
     } while (swapped);
 }
 
-/* function to swap data of two nodes a and b*/
-void swap(struct party_node *a, struct party_node *b)
+void swap(struct party_node **head, struct party_node *a, struct party_node *b, struct party_node *a_prev, struct party_node *b_prev)
 {
-    double temp = a->price;
-    a->price = b->price;
-    b->price = temp;
 
-    char *temp2 = a->item;
-    a->item = b->item;
-    b->item = temp2;
+    if (a_prev == NULL)
+    {
+        *head = b;
+    }
+    else
+    {
+        a_prev->next = b;
+    }
+    if (b == NULL)
+    {
+        *head = a;
+    }
+    else
+    {
+        b_prev->next = a;
+    }
 
-    char *temp3 = a->ta;
-    a->ta = b->ta;
-    b->ta = temp3;
+    struct party_node *temp = b->next;
+    a->next = temp;
+    // printf("deep pain");
+    // a_prev->next = b;
+    // printf("on the edge");
+    b->next = a;
+    return;
 }
 
 // Trim list to fit the budget
@@ -100,7 +150,7 @@ double finalize_list(struct party_node **head, double budget)
         curr = curr->next;
     }
 
-    return budget-cost;
+    return budget - cost;
 }
 
 // Print the current list - hope this is helpful!

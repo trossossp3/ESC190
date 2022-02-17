@@ -14,4 +14,4 @@ void remove_request(struct party_node **head);
 void make_sorted(struct party_node **head);
 double finalize_list(struct party_node **head, double budget);
 void print_list(struct party_node *head);
-void swap(struct party_node *a, struct party_node *b);
+void swap(struct party_node **head, struct party_node *a, struct party_node *b, struct party_node *a_prev, struct party_node *b_prev);

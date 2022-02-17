@@ -23,19 +23,19 @@ int main(){
         printf("IDE was not added.\n");
     }
     check_add = add_request(&head, "Balloons", 2.49, "Brian");
-    check_add = add_request(&head, "Limousine rental", 500.01, "Tony");
-    check_add = add_request(&head, "Coffee and doughnuts", 10.00, "Nhien");
-    check_add = add_request(&head, "Croissants", 25.50, "Gil");
-    check_add = add_request(&head, "Pineapple pizza", 29.99, "Jeffrey");
-    check_add = add_request(&head, "Charcuterie tray", 79.99, "Samantha");
-    check_add = add_request(&head, "Champagne", 100.00, "Samantha");
+    // check_add = add_request(&head, "Limousine rental", 500.01, "Tony");
+    // check_add = add_request(&head, "Coffee and doughnuts", 10.00, "Nhien");
+    // // check_add = add_request(&head, "Croissants", 25.50, "Gil");
+    // check_add = add_request(&head, "Pineapple pizza", 29.99, "Jeffrey");
+    // check_add = add_request(&head, "Charcuterie tray", 79.99, "Samantha");
+    // check_add = add_request(&head, "Champagne", 100.00, "Samantha");
 
     print_list(head); //10 requests added
 
-    //Remove Samantha's request for Champagne
-    printf("LIFO removal:\n");
-    remove_request(&head);
-    print_list(head);
+    // Remove Samantha's request for Champagne
+    // printf("LIFO removal:\n");
+    // remove_request(&head);
+    // print_list(head);
 
     
     //Sort by price
@@ -43,12 +43,12 @@ int main(){
     make_sorted(&head);
     print_list(head);
     
-    //Finalize the shopping list
-    printf("Finalizing the shopping list:\n");
-    double remainder=0.00;
-    remainder = finalize_list(&head, 500.00);
-    print_list(head);
-    printf("The remainder after shopping is: %.2lf\n", remainder);
+    // //Finalize the shopping list
+    // printf("Finalizing the shopping list:\n");
+    // double remainder=0.00;
+    // remainder = finalize_list(&head, 500.00);
+    // print_list(head);
+    // printf("The remainder after shopping is: %.2lf\n", remainder);
 
     //Free the list
     while(head!=NULL){
