@@ -5,7 +5,7 @@
 int main(){
     //Empty list
     struct party_node *head = NULL;
-
+    printf("%d", head == NULL);
     int check_add = 0;
     //Adding TA requests
     printf("Adding the TA requests:\n");
