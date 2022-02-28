@@ -50,6 +50,7 @@ void remove_request(struct party_node **head)
     {
         return;
     }
+    //make a temp node that points to the same value being removed then remove then free the stuff
     struct party_node *temp = *head;
 
     free(temp->item);
