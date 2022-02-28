@@ -20,8 +20,11 @@ int add_request(struct party_node **head, char *item, double price, char *ta)
     {
         len_ta++;
     }
-    temp->ta = (char *)malloc(sizeof(char) * (len_ta+1));
-    temp->item = (char *)malloc(sizeof(char) * (len_item+1));
+    char* taNew = (char *)malloc(sizeof(char) * (len_ta+1));
+    char* itemNew = (char *)malloc(sizeof(char) * (len_item+1));
+    temp->ta = taNew;
+    temp->item = itemNew;
+    temp->price = price;
 
     for (int i = 0; i < len_item + 1; i++)
     {
@@ -29,10 +32,10 @@ int add_request(struct party_node **head, char *item, double price, char *ta)
     }
     for (int i = 0; i < len_ta + 1; i++)
     {
-        temp->ta[i] = ta[i];
+        temp->ta[i] = ta[i];    
     }
 
-    temp->price = price;
+  
     temp->next = *head;
     *head = temp;
     return 0;
@@ -68,39 +71,40 @@ int getCount(struct party_node **head)
     }
     return count;
 }
-struct party_node *swap(struct party_node *ptr1, struct party_node *ptr2)
+struct party_node *swap(struct party_node *a, struct party_node *b)
 {
-    struct party_node *tmp = ptr2->next;
-    ptr2->next = ptr1;
-    ptr1->next = tmp;
-    return ptr2;
+    struct party_node *tmp = b->next;
+    b->next = a;
+    a->next = tmp;
+    return b;
 }
 void make_sorted(struct party_node **head)
 {
-    struct party_node **h;
-    int i, j, swapped;
+    struct party_node **curr;
+    
+    int swapped; //boolean for if a swap happend
     int count = getCount(head);
-    for (i = 0; i < count; i++)
+    for (int i = 0; i < count; i++)
     {
 
-        h = head;
+        curr = head;
         swapped = 0;
 
-        for (j = 0; j < count - i - 1; j++)
+        for (int j = 0; j < count - i - 1; j++)
         {
 
-            struct party_node *p1 = *h;
+            struct party_node *p1 = *curr;
             struct party_node *p2 = p1->next;
 
             if (p1->price < p2->price)
             {
-                *h = swap(p1, p2);
+                *curr= swap(p1, p2); //makes it so h points to the first element in the pair after the swap
                 swapped = 1;
             }
 
-            h = &((*h)->next);
+            curr = &((*curr)->next); //make h be a pointer to the next value after current
         }
-        if (swapped == 0)
+        if (swapped == 0) // if we didnt swap any elements exit
             break;
     }
 }
