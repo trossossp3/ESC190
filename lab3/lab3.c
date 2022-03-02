@@ -10,7 +10,7 @@ int add_request(struct party_node **head, char *item, double price, char *ta)
 
     struct party_node *temp = (struct party_node *)malloc(sizeof(struct party_node));
     int len_item = 0;
-    int len_ta = 0;
+    int len_ta = 0;       
 
     while (*(item + len_item) != '\0')
     {

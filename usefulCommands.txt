@@ -1,0 +1,7 @@
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./task -g
+where "task" is the exe for the c file being run
+
+ssh rossostr@remote.ecf.utoronto.ca
+v
+scp <local-filepath> <ECF-username>@remote.ecf.utoronto.ca:<ECF-filepath>
+scp ECF-username>@remote.ecf.utoronto.ca:<ECF-filepath> <local-filepath>
