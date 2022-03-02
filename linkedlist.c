@@ -1,45 +1,51 @@
-#include "linkedlist.h"
-#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
-int main(){
-    struct node *head = NULL;
-    head = insert_node(head,1);
-    printf("%d", head->data);
-    return 0;
-}
 
-struct node* insert_node(struct node *head, int value){
-    struct node *new_node = (struct node*)malloc(sizeof(struct node));
-    new_node->data=value;
-    new_node->next=head;
-    head=new_node;
-    return head;
-}
-int search_list(struct node *head, int value){
-    while(head!=NULL){
-        if (head->data == value){
-            return 1;
-        }
-        head=head->next;
-    }
-    return 0;
-}
+typedef struct node
+{
+    int value;
+    struct node *next;
+} node;
 
-struct node* delete_node(struct node *head, int value){
-    struct node *curr = head;
-    struct node *prev = NULL;
-    while (curr != NULL && curr->data!=value){
-        prev = curr;
-        curr = curr->next;
+void addIndex(node **head, int add, int index)
+{
+    node *cur = *head;
+    node *prev = NULL;
+    node *new = (node *)malloc(sizeof(node));
+    new->value = add;
+    
+    if (index ==0)
+    {
+        printf("HELLO");
+        new->next = *head;
+        *head = new;
+        return;
     }
-    if (curr == NULL){
-        return head;
-    }else if (prev == NULL){
-        head = head->next;
-    }else{
-        prev->next = curr->next;
+    int i;
+    for (i = 0; i < index; i++)
+    {
+        prev = cur;
+        cur = cur->next;
     }
-    free(curr);
-    return head;
+
+    prev->next = new;
+    new->next = cur;
+}
+int main()
+{
+    node *head = NULL;
+    addIndex(&head, 40,0);
+    addIndex(&head, 50,1);
+    addIndex(&head, 40,2);
+    addIndex(&head, 50,3);
+    printf("HELLO\n");
+    node *cur = head;
+    while(cur!=NULL){
+        printf("%d\n",(cur)->value);
+        node* temp;
+        temp = cur;
+
+        cur= cur->next;
+        free(temp);
+    }
 }

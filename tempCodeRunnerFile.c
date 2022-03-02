@@ -1,1 +1,1 @@
- = (struct el*)(malloc(sizeof(struct el)));
+printf("%d", head->value);
