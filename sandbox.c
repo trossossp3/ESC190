@@ -6,12 +6,24 @@ typedef struct el{
 void change(int arr[]){
     arr[2] = 69;
 }
-int main()
 
+void change1(int *in){
+    int temp = 10;
+    *in = 10;
+}
+int main()
 {
-    int arr[] = {1,2,34};
-    printf("%i", arr[2]);
+    int q = 5;
+    int* cat = &q;
+    change1(cat);
+    printf("%d\n", *cat);
+
+    int arr[] = {1,2,3,4};
     change(arr);
-    printf("%i", arr[2]);
+    printf("%d", arr[2]);
+
+
+
+
 }
 
