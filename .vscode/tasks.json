@@ -5,14 +5,13 @@
 		{
 			"type": "cppbuild",
 			"label": "C/C++: gcc build active file",
-			"command": "/usr/bin/gcc",
+			"command": "gcc",
 			"args": [
 				"-g",
 				"${file}",
 				"-o",
+				"${fileBasenameNoExtension}",
 				"-lm",
-				"${fileDirname}/${fileBasenameNoExtension}",
-				
 			],
 			"options": {
 				"cwd": "${fileDirname}"
