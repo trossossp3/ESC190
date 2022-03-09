@@ -1,1 +1,2 @@
-printf("%d", head->value);
+
+        temp[i] = malloc(sizeof

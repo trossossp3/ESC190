@@ -35,7 +35,7 @@ int main()
 {
     node *head = NULL;
     addIndex(&head, 40,0);
-    addIndex(&head, 50,1);
+    addIndex(&head, 50,1)
     addIndex(&head, 40,2);
     addIndex(&head, 50,3);
     printf("HELLO\n");
