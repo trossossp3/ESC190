@@ -1,5 +1,5 @@
 #include "a1.h"
-
+#include <stdio.h>
 Restaurant *initialize_restaurant(char *name)
 {
 	int i = 0;
@@ -12,12 +12,18 @@ Restaurant *initialize_restaurant(char *name)
 	char *temp = (char *)(malloc(sizeof(char) * (i + 1)));
 
 	strcpy(temp, name);
+	// for(int j=0;j<i;j++){
+	// 	temp[j] = name[j];
+	// }
+	// temp[i] = '\0';
+
+	printf("%s", temp);
 	Queue *tempQ = (Queue *)malloc(sizeof(Queue));
 	tempQ->head = NULL;
 	tempQ->tail = NULL;
 
-	Menu *men = (Menu *)malloc(sizeof(Menu));
-	men = load_menu(MENU_FNAME);
+	//Menu *men = (Menu *)malloc(sizeof(Menu));
+	Menu* men = load_menu(MENU_FNAME);
 
 	rest->name = temp;
 	rest->menu = men;
@@ -59,10 +65,10 @@ Menu *load_menu(char *fname)
 		printf("Read String2 |%s|\n", names[i]);
 		printf("Read String3 |%f|\n", prices[i]);
 		// temp[i][0] = 'd';
-		codes[i][ITEM_CODE_LENGTH] = '\0';
-		names[i][MAX_ITEM_NAME_LENGTH] = '\0';
+		codes[i][ITEM_CODE_LENGTH-1] = '\0';
+		names[i][MAX_ITEM_NAME_LENGTH-1] = '\0';
 	}
-
+	fclose(f);
 	men->num_items = linesCount;
 	men->item_codes = codes;
 	men->item_names = names;
@@ -221,12 +227,14 @@ void clear_menu(Menu **menu)
 
 	free((*menu)->item_cost_per_unit);
 	(*menu)->item_cost_per_unit = NULL;
-	
+	//free(*menu);	
 	// (*menu)->num_items = NULL;
 
 }
 
 void close_restaurant ( Restaurant ** restaurant ){
+	clear_menu(&((*restaurant)->menu));
+	
 	free((*restaurant)->name);
 	free((*restaurant)->menu);
 	free((*restaurant)->pending_orders);
