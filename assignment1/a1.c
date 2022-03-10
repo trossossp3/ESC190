@@ -1,5 +1,5 @@
 #include "a1.h"
-#include <stdio.h>
+
 Restaurant *initialize_restaurant(char *name)
 {
 	int i = 0;
@@ -9,7 +9,7 @@ Restaurant *initialize_restaurant(char *name)
 	}
 	Restaurant *rest = malloc(sizeof(Restaurant));
 
-	char *temp = (char *)(malloc(sizeof(char) * (i + 1)));
+	char *temp = (char *)(malloc(sizeof(char) * (strlen(name)+1)));
 
 	strcpy(temp, name);
 	// for(int j=0;j<i;j++){
@@ -17,7 +17,7 @@ Restaurant *initialize_restaurant(char *name)
 	// }
 	// temp[i] = '\0';
 
-	printf("%s", temp);
+	// printf("%s", temp);
 	Queue *tempQ = (Queue *)malloc(sizeof(Queue));
 	tempQ->head = NULL;
 	tempQ->tail = NULL;
@@ -43,13 +43,16 @@ Menu *load_menu(char *fname)
 	char str2[30];
 	char str3[30];
 	char ch;
-
-	int linesCount = 1; // pretty sus way of doing this cuz like since the last line end on the EOF need to add one extra
-	while ((ch = fgetc(f)) != EOF)
-	{
-		if (ch == '\n')
-			linesCount++;
-	}
+	char line[256];
+	int linesCount = 0; // pretty sus way of doing this cuz like since the last line end on the EOF need to add one extra
+	 while (fgets(line, sizeof(line), f)) {
+        
+        if(strlen(line)>=2){
+			// printf("%s", line); 
+		linesCount++;
+		}
+		
+    }
 	fclose(f);
 	f = fopen(fname, "r");
 	char **codes = malloc(sizeof(char *) * linesCount);
@@ -61,9 +64,9 @@ Menu *load_menu(char *fname)
 		names[i] = malloc(sizeof(char) * MAX_ITEM_NAME_LENGTH);
 	
 		fscanf(f, "%[^, ],%[^,],%*c%lf ", codes[i], names[i], &prices[i]); // pretty much goes through and like stops when it sees chars after the ^
-		printf("Read String1 |%s|\n", codes[i]);
-		printf("Read String2 |%s|\n", names[i]);
-		printf("Read String3 |%f|\n", prices[i]);
+		// printf("Read String1 |%s|\n", codes[i]);
+		// printf("Read String2 |%s|\n", names[i]);
+		// printf("Read String3 |%f|\n", prices[i]);
 		// temp[i][0] = 'd';
 		codes[i][ITEM_CODE_LENGTH-1] = '\0';
 		names[i][MAX_ITEM_NAME_LENGTH-1] = '\0';
@@ -138,9 +141,9 @@ double get_item_cost(char *item_code, Menu *menu)
 double get_order_subtotal(Order* order, Menu* menu){
 	//go through all the codes in order then find the prince of them using menu and get_item_cost then multiply by the number of them
 	int num_items = order->num_items;
-    int total =0;
+    double total =0;
     for(int i =0;i<num_items;i++){
-        int item_cost = get_item_cost(order->item_codes[i], menu);
+        double item_cost = get_item_cost(order->item_codes[i], menu);
         total += item_cost * (order->item_quantities[i]);
 
     }
@@ -148,8 +151,9 @@ double get_order_subtotal(Order* order, Menu* menu){
 }
 
 double get_order_total(Order* order, Menu* menu){
-	float total = 0;
-	total = get_order_subtotal(order,menu) * TAX_RATE;
+	double total = get_order_subtotal(order,menu);
+	total += get_order_subtotal(order,menu) * (TAX_RATE/100.0);
+	return total;
 }
 void enqueue_order(Order* order , Restaurant* restaurant ){
     QueueNode *qn = (QueueNode*)malloc(sizeof(QueueNode));
@@ -227,7 +231,7 @@ void clear_menu(Menu **menu)
 
 	free((*menu)->item_cost_per_unit);
 	(*menu)->item_cost_per_unit = NULL;
-	//free(*menu);	
+	free(*menu);	
 	// (*menu)->num_items = NULL;
 
 }
@@ -236,7 +240,7 @@ void close_restaurant ( Restaurant ** restaurant ){
 	clear_menu(&((*restaurant)->menu));
 	
 	free((*restaurant)->name);
-	free((*restaurant)->menu);
+	//free((*restaurant)->menu);
 	free((*restaurant)->pending_orders);
 	free((*restaurant));
 }
