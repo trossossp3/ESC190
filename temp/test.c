@@ -1,130 +1,92 @@
 #include "a1.h"
-#define CLOSING_OPTION 3
 
-int main(){
-	char* restaurant_name = "Tim Bortons";
-	int choice = -1;
-	
-	int num_pending_orders;
-	int num_completed_orders;
-	FILE *f= fopen("text.txt", "r");
-	// just ... dont enter too many items....
-	char str_input1[100];
-	char str_input2[100];
-	memset(str_input1, '\0', sizeof(char) * 100);
-	memset(str_input2, '\0', sizeof(char) * 100);
-	
-	fprintf(stdout, "Welcome to %s!\n", restaurant_name);
-	
-	char* options_str = "Options:\n"
-	"\t (%d) Take an order\n"
-	"\t (%d) Process an order\n"
-	"\t (%d) Close the restaurant\n"
-	">>> ";
-	
-	Restaurant* restaurant = initialize_restaurant(restaurant_name);
-	int i = 0;
-	while (i<2){
-        i++;
-		fprintf(stdout, options_str, 1, 2, 3);
-		fscanf(f, "%d", &choice);
-		printf("%d",choice);
-		switch (choice){
-			case 1:
-				fprintf(stdout, 
-					"----------------------------------------------\n"
-					"|           STARTING TAKE AN ORDER           |\n"
-					"----------------------------------------------\n"
-				);
-				num_pending_orders = get_num_pending_orders(restaurant);
-				num_completed_orders = get_num_completed_orders(restaurant);
-				fprintf(stdout, "Number of completed orders: %d\nNumber of pending orders: %d\n",
-					num_completed_orders, num_pending_orders);
-				
-				print_menu(restaurant->menu);
-				
-				fprintf(stdout, "Enter a sequence of %d-digit item codes: ", ITEM_CODE_LENGTH - 1);
-				fscanf(f, "%s", str_input1); // it's not a string literal here, haha
-		
-				fprintf(stdout, "Enter  '%s'-delimited integer quantities of each item: ", MENU_DELIM);
-				fscanf(f, "%s", str_input2);	
-				
-				Order *new_order = build_order(str_input1, str_input2);
-				enqueue_order(new_order, restaurant);
-				
-				fprintf(stdout, "Order taken: \n");
-				print_order(new_order);
-				
-				num_pending_orders = get_num_pending_orders(restaurant);
-				num_completed_orders = get_num_completed_orders(restaurant);
-				fprintf(stdout, "Number of completed orders: %d\nNumber of pending orders: %d\n",
-					num_completed_orders, num_pending_orders);
-				fprintf(stdout, 
-					"----------------------------------------------\n"
-					"|          COMPLETED TAKE AN ORDER           |\n"
-					"----------------------------------------------\n"
-				);
-				break;
-			case 2:
-				fprintf(stdout, 
-					"----------------------------------------------\n"
-					"|          STARTING PROCESS AN ORDER         |\n"
-					"----------------------------------------------\n"
-				);
-				fprintf(stdout, "----------- STARTING PROCESS AN ORDER -----------");
-				num_pending_orders = get_num_pending_orders(restaurant);
-				num_completed_orders = get_num_completed_orders(restaurant);
-				fprintf(stdout, "Number of completed orders: %d\nNumber of pending orders: %d\n",
-					num_completed_orders, num_pending_orders);
-				
-				if (num_pending_orders != 0){
-					Order* dequeued_order = dequeue_order(restaurant);
-					fprintf(stdout, "Now processing order...\n");
-					print_receipt(dequeued_order, restaurant->menu);
-					clear_order(&dequeued_order);
-				
-					num_pending_orders = get_num_pending_orders(restaurant);
-					num_completed_orders = get_num_completed_orders(restaurant);
-					fprintf(stdout, "Number of completed orders: %d\nNumber of pending orders: %d\n",
-					num_completed_orders, num_pending_orders);
-					
-				} else {
-					fprintf(stdout, "No pending orders available for processing...\n");
-				}
+void main(){
+	load_menu("menu.txt");
+}
+Menu *load_menu(char *fname)
+{
 
-					
-				fprintf(stdout, 
-					"----------------------------------------------\n"
-					"|         COMPLETED PROCESS AN ORDER         |\n"
-					"----------------------------------------------\n"
-				);
-				break;
-			case 3:
-				fprintf(stdout, 
-					"----------------------------------------------\n"
-					"|          STARTING CLOSE RESTAURANT         |\n"
-					"----------------------------------------------\n"
-				);
-				close_restaurant(&restaurant);
-				fprintf(stdout, "Thank you for coming to %s. Goodbye...\n", restaurant_name);
-				fprintf(stdout, 
-					"----------------------------------------------\n"
-					"|         COMPLETED CLOSE RESTAURANT         |\n"
-					"----------------------------------------------\n"
-				);
-				break;
-			default:
-				fprintf(stdout, 
-					"----------------------------------------------\n"
-					"|              ?!!!! ERROR !!!!?             |\n"
-					"----------------------------------------------\n"
-				);
-				fprintf(stdout, "Your entry (%d) is not a valid option...\nEnter a valid numeric option\n", choice);
+	Menu *men = malloc(sizeof(Menu));
+	FILE *f;
+
+	f = fopen(fname, "r");
+
+	// char str1[40];
+	// char str2[30];
+	// char str3[30];
+	// char ch;
+	int max_line_len = ITEM_CODE_LENGTH + MAX_ITEM_NAME_LENGTH;
+	char line[256];
+	
+	int linesCount = 0; // pretty sus way of doing this cuz like since the last line end on the EOF need to add one extra
+	char **lines = (char**)malloc(sizeof(char*));
+
+	while (fgets(line, sizeof(line), f))
+	{
+
+		if (strlen(line) >= 3)
+		{
+			// printf("%s\n", line);
+			// printf("%d\n", strlen(line));
+			
+			lines = (char **)realloc(lines, (linesCount+1) * sizeof(char *));
+			// printf("h1ello\n");
+			lines[linesCount] = (char *)malloc((strlen(line) + 1) * sizeof(char)); // array of all the lines
+			strcpy(lines[linesCount], line);
+			printf("%s",lines[linesCount]);
+			linesCount++;
 		}
-		
+		// printf("helaaaaaaaaaaaaaaaaa2lo\n");
 	}
+	// printf("hello\n");
+	printf("%d", linesCount);
+	fclose(f);
+	f = fopen(fname, "r");
+	char **codes = malloc(sizeof(char *) * linesCount);
+	double *prices = malloc(sizeof(double) * linesCount);
+	char **names = malloc(sizeof(char *) * linesCount);
+
+	for (int i = 0; i < linesCount; i++)
+	{
+		codes[i] = malloc(sizeof(char) * ITEM_CODE_LENGTH);
+		names[i] = malloc(sizeof(char) * MAX_ITEM_NAME_LENGTH);
+
+		char* token = strtok(lines[i], MENU_DELIM);
+
+		int start_ind;
+		for(start_ind = 0; start_ind < strlen(token);){
+			if(token[start_ind] == ' ' && token[start_ind] == '\t' && token[start_ind] == '\n'){
+				start_ind++;
+			}else{
+				break;
+			}
+		}
+
+		codes[i] = (char*)malloc(strlen(token) - start_ind + 1);
+		for(int x = 0; x<2;x++){
+			codes[i][x] = token[start_ind+x];
+		}
+		codes[i][2] = '\0';
+
+		token = strtok(NULL, MENU_DELIM);
+		names[i] = malloc(sizeof(char) * strlen(token) +1);
+		// for(int x =0; x<strlen(token);i++){
+		// 	names[i][x] = token[x];
+		// }
+		strcpy(names[i], token);
+		// printf("%s", names[i]);
+		token = strtok(NULL, MENU_DELIM);
+		char* num;
+		memmove(token, token+1, strlen(token));
+		printf(token);
+
+		prices[i] =  atof(token);
 
 
-	return 0;
-	
+	}
+	fclose(f);
+	men->num_items = linesCount;
+	men->item_codes = codes;
+	men->item_names = names;
+	men->item_cost_per_unit = prices;
 }

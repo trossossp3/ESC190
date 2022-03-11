@@ -22,9 +22,9 @@ int main(){
 	"\t (%d) Process an order\n"
 	"\t (%d) Close the restaurant\n"
 	">>> ";
-	
+	// prtinf("helelleleoe\n");
 	Restaurant* restaurant = initialize_restaurant(restaurant_name);
-	
+	printf("helelleleoe\n");
 	while (choice != CLOSING_OPTION){
 		fprintf(stdout, options_str, 1, 2, 3);
 		fscanf(stdin, "%d", &choice);
