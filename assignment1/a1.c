@@ -9,7 +9,7 @@ Restaurant *initialize_restaurant(char *name)
 	}
 	Restaurant *rest = malloc(sizeof(Restaurant));
 
-	char *temp = (char *)(malloc(sizeof(char) * (strlen(name)+1)));
+	char *temp = (char *)(malloc(sizeof(char) * (strlen(name) + 1)));
 
 	strcpy(temp, name);
 	// for(int j=0;j<i;j++){
@@ -22,8 +22,8 @@ Restaurant *initialize_restaurant(char *name)
 	tempQ->head = NULL;
 	tempQ->tail = NULL;
 
-	//Menu *men = (Menu *)malloc(sizeof(Menu));
-	Menu* men = load_menu(MENU_FNAME);
+	// Menu *men = (Menu *)malloc(sizeof(Menu));
+	Menu *men = load_menu(MENU_FNAME);
 
 	rest->name = temp;
 	rest->menu = men;
@@ -45,14 +45,15 @@ Menu *load_menu(char *fname)
 	char ch;
 	char line[256];
 	int linesCount = 0; // pretty sus way of doing this cuz like since the last line end on the EOF need to add one extra
-	 while (fgets(line, sizeof(line), f)) {
-        
-        if(strlen(line)>=2){
-			// printf("%s", line); 
-		linesCount++;
+	while (fgets(line, sizeof(line), f))
+	{
+
+		if (strlen(line) >= 2)
+		{
+			// printf("%s", line);
+			linesCount++;
 		}
-		
-    }
+	}
 	fclose(f);
 	f = fopen(fname, "r");
 	char **codes = malloc(sizeof(char *) * linesCount);
@@ -62,14 +63,14 @@ Menu *load_menu(char *fname)
 	{
 		codes[i] = malloc(sizeof(char) * ITEM_CODE_LENGTH);
 		names[i] = malloc(sizeof(char) * MAX_ITEM_NAME_LENGTH);
-	
-		fscanf(f, "%[^, ],%[^,],%*c%lf ", codes[i], names[i], &prices[i]); // pretty much goes through and like stops when it sees chars after the ^
+
+		fscanf(f, " %[^, ],%[^,],%*c%lf ", codes[i], names[i], &prices[i]); // pretty much goes through and like stops when it sees chars after the ^
 		// printf("Read String1 |%s|\n", codes[i]);
 		// printf("Read String2 |%s|\n", names[i]);
 		// printf("Read String3 |%f|\n", prices[i]);
 		// temp[i][0] = 'd';
-		codes[i][ITEM_CODE_LENGTH-1] = '\0';
-		names[i][MAX_ITEM_NAME_LENGTH-1] = '\0';
+		codes[i][ITEM_CODE_LENGTH - 1] = '\0';
+		names[i][MAX_ITEM_NAME_LENGTH - 1] = '\0';
 	}
 	fclose(f);
 	men->num_items = linesCount;
@@ -138,112 +139,141 @@ double get_item_cost(char *item_code, Menu *menu)
 	}
 	return menu->item_cost_per_unit[count];
 }
-double get_order_subtotal(Order* order, Menu* menu){
-	//go through all the codes in order then find the prince of them using menu and get_item_cost then multiply by the number of them
+double get_order_subtotal(Order *order, Menu *menu)
+{
+	// go through all the codes in order then find the prince of them using menu and get_item_cost then multiply by the number of them
 	int num_items = order->num_items;
-    double total =0;
-    for(int i =0;i<num_items;i++){
-        double item_cost = get_item_cost(order->item_codes[i], menu);
-        total += item_cost * (order->item_quantities[i]);
-
-    }
-    return total;
-}
-
-double get_order_total(Order* order, Menu* menu){
-	double total = get_order_subtotal(order,menu);
-	total += get_order_subtotal(order,menu) * (TAX_RATE/100.0);
+	double total = 0;
+	for (int i = 0; i < num_items; i++)
+	{
+		double item_cost = get_item_cost(order->item_codes[i], menu);
+		total += item_cost * (order->item_quantities[i]);
+	}
 	return total;
 }
-void enqueue_order(Order* order , Restaurant* restaurant ){
-    QueueNode *qn = (QueueNode*)malloc(sizeof(QueueNode));
-    qn->order = order;
-    qn->next = NULL;
 
-    QueueNode *q_tail = restaurant->pending_orders->tail;
-    QueueNode *q_head = restaurant->pending_orders->head;
-    if (q_tail == NULL){
-         restaurant->pending_orders->head = restaurant->pending_orders->tail = qn;
-    }else{
-    restaurant->pending_orders->tail->next = qn;
-    restaurant->pending_orders->tail = qn;
-    }
-    restaurant->num_pending_orders++;
+double get_order_total(Order *order, Menu *menu)
+{
+	double total = get_order_subtotal(order, menu);
+	total += get_order_subtotal(order, menu) * (TAX_RATE / 100.0);
+	return total;
 }
-Order* dequeue_order(Restaurant* restaurant){
-    //given that queue will always have a head and tail 
-    QueueNode *node = restaurant->pending_orders->head;
-    Order *order = node->order;
-    if (restaurant->pending_orders->head = restaurant->pending_orders->tail){
-        restaurant->pending_orders->head = restaurant->pending_orders->tail = NULL;
-        free(node);
-        
-    }else{
-        restaurant->pending_orders->head = node->next;
-        free(node);
-       
-    }
+void enqueue_order(Order *order, Restaurant *restaurant)
+{
+	QueueNode *qn = (QueueNode *)malloc(sizeof(QueueNode));
+	qn->order = order;
+	qn->next = NULL;
+
+	QueueNode *q_tail = restaurant->pending_orders->tail;
+	QueueNode *q_head = restaurant->pending_orders->head;
+	if (q_tail == NULL)
+	{
+		restaurant->pending_orders->head = restaurant->pending_orders->tail = qn;
+	}
+	else
+	{
+		restaurant->pending_orders->tail->next = qn;
+		restaurant->pending_orders->tail = qn;
+	}
+	restaurant->num_pending_orders++;
+}
+Order *dequeue_order(Restaurant *restaurant)
+{
+	// given that queue will always have a head and tail
+	QueueNode *node = restaurant->pending_orders->head;
+	Order *order = node->order;
+	if (restaurant->pending_orders->head == restaurant->pending_orders->tail)
+	{
+		restaurant->pending_orders->head = restaurant->pending_orders->tail = NULL;
+		free(node);
+	}
+	else
+	{
+		restaurant->pending_orders->head = node->next;
+		free(node);
+	}
 	restaurant->num_completed_orders++;
 	restaurant->num_pending_orders--;
 	return order;
-
 }
 
-int get_num_completed_orders(Restaurant* restaurant){
+int get_num_completed_orders(Restaurant *restaurant)
+{
 	return restaurant->num_completed_orders;
 }
-int get_num_pending_orders(Restaurant* restaurant){
+int get_num_pending_orders(Restaurant *restaurant)
+{
 	return restaurant->num_pending_orders;
 }
 
-void clear_order(Order** order){
-	//need to clear item_codes which is an array of char arrays so need to clear each of those 
-	//item quantites need only one clear
+void clear_order(Order **order)
+{
+	// need to clear item_codes which is an array of char arrays so need to clear each of those
+	// item quantites need only one clear
 
 	int num_elements = (*order)->num_items;
 
-	for(int i = 0; i < num_elements; i++){
+	for (int i = 0; i < num_elements; i++)
+	{
 		free((*order)->item_codes[i]);
 		(*order)->item_codes[i] = NULL;
 	}
 	free((*order)->item_codes);
 	(*order)->item_codes = NULL;
 	free((*order)->item_quantities);
-	(*order)->item_quantities == NULL;
+	(*order)->item_quantities = NULL;
 	free(*order);
 	*order = NULL;
 }
 void clear_menu(Menu **menu)
 {
 	int num_itemss = (*menu)->num_items;
-	for(int i = 0; i<num_itemss;i++){
+	for (int i = 0; i < num_itemss; i++)
+	{
 		free((*menu)->item_codes[i]);
 		(*menu)->item_codes[i] = NULL;
 		free((*menu)->item_names[i]);
 		(*menu)->item_names[i] = NULL;
-
 	}
 	free((*menu)->item_codes);
 	(*menu)->item_codes = NULL;
 	free((*menu)->item_names);
 	(*menu)->item_names = NULL;
 
-
 	free((*menu)->item_cost_per_unit);
 	(*menu)->item_cost_per_unit = NULL;
-	free(*menu);	
+	free(*menu);
 	// (*menu)->num_items = NULL;
-
 }
 
-void close_restaurant ( Restaurant ** restaurant ){
+void close_restaurant(Restaurant **restaurant)
+{
+
 	clear_menu(&((*restaurant)->menu));
-	
+
 	free((*restaurant)->name);
-	//free((*restaurant)->menu);
+	// free((*restaurant)->menu);
+
+	// while there are still elements in the pending orders queue
+	while ((*restaurant)->pending_orders->head != NULL)
+	{
+		QueueNode *node = (*restaurant)->pending_orders->head;
+		Order **order = &(node->order);
+
+		(*restaurant)->pending_orders->head = node->next;
+
+		// clear the order inside of the queue nodes
+		clear_order(order);
+		free(node);
+	}
+	// set the pending orders to zero just in case
+	(*restaurant)->num_pending_orders = 0;
+
+	// free the pending orders queue
 	free((*restaurant)->pending_orders);
 	free((*restaurant));
 }
+
 
 void print_menu(Menu *menu)
 {

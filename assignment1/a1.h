@@ -85,5 +85,5 @@ void close_restaurant(Restaurant** restaurant);
 void print_menu(Menu* menu);
 void print_order(Order* order);
 void print_receipt(Order* order, Menu* menu);
-
+void doit(int choice, char *str_input1, char *str_input2);
 /* ------- End of header file -------*/
