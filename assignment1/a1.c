@@ -5,7 +5,7 @@ Restaurant *initialize_restaurant(char *name)
 	int i = 0;
 	for (i = 0; i != '\0'; i++)
 	{
-		i++;A
+		i++;
 	}
 	Restaurant *rest = malloc(sizeof(Restaurant));
 
