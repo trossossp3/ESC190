@@ -15,7 +15,7 @@ int main(){
 
     // Task 3
     char *hexcode = compress(code);
-    printf("%s\n\n", hexcode);
+    printf("%s\n", hexcode);
     free(code);
     
     code = decompress(hexcode);
@@ -25,7 +25,7 @@ int main(){
     free(code);
     free(samehexcode);
 
-    printf("%s", "HELLO");
+  
     // Task 4
     printf("%d\n", calc_ld("COMMENCE", "CODING"));
     

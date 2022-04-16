@@ -1,5 +1,19 @@
 #include "a2.h"
 
+char *strrevv(char *str)
+{
+    char *p1, *p2;
+
+    if (!str || !*str)
+        return str;
+    for (p1 = str, p2 = str + strlen(str) - 1; p2 > p1; ++p1, --p2)
+    {
+        *p1 ^= *p2;
+        *p2 ^= *p1;
+        *p1 ^= *p2;
+    }
+    return str;
+}
 int bitwise_xor(int value)
 {
 
@@ -35,7 +49,7 @@ char *xor_encrypt(char c)
 
     // //printf("\n");
     a[7] = '\0';
-    strrev(a);
+    strrevv(a);
 
     return a;
 }
@@ -56,10 +70,10 @@ void print_code(char **code)
     {
         for (int j = 0; j < 16; j++)
         {
-            //printf("%c", code[i][j]);
+            // printf("%c", code[i][j]);
             if (j == 15)
             {
-                //printf("\n");
+                // printf("\n");
             }
         }
     }
@@ -143,13 +157,16 @@ char *string_enc(char *msg)
     char *enc = (char *)malloc(strlen(msg) * (7 + 1));
     char *temp = xor_encrypt(msg[0]);
     // //printf("%s\n", xor_encrypt(msg[0]));
+
     strcpy(enc, temp);
     // //printf("%d\n",(strlen(enc)));
-
+    free(temp);
     for (int i = 1; i < strlen(msg); i++)
     {
         // //printf("%s\n", enc);
-        strcat(enc, xor_encrypt(msg[i]));
+        char *temp1 = xor_encrypt(msg[i]);
+        strcat(enc, temp1);
+        free(temp1);
     }
     enc[strlen(msg) * 7] = '\0';
 
@@ -226,52 +243,7 @@ char *string_no_D(char **grid)
     // //printf("\n%s\n",out);
     return out;
 }
-void remove_corners(char *s1)
-{
-    char **grid = (char **)malloc(16 * sizeof(char *));
-    for (int i = 0; i < 16; i++)
-    {
-        grid[i] = (char *)malloc(16 * sizeof(char));
-    }
 
-    int ind = 0;
-    for (int i = 0; i < 16; i++)
-    {
-        for (int j = 0; j < 16; j++)
-        {
-            grid[i][j] = s1[ind++];
-        }
-    }
-    grid = undo_corners(grid);
-    print_code(grid);
-    char *s2 = string_no_D(grid); // this returns a string of just the encrypted characters no corner nonsense
-                                  // //printf("%s\n",s2);
-    char *null_term = xor_encrypt('\0');
-    char *mess = malloc(180 / 7 + 1); // num possible chars
-    int indm = 0;
-    // //printf("NULL TERM %s\n", null_term);
-    int nul_term = 0;
-    int i = 0;
-    while (!nul_term)
-    {
-
-        char *temp = malloc(8);
-
-        // //printf("%c\n", s2[i * 7]);
-        strncpy(temp, &s2[i * 7], 7);
-        temp[7] = '\0';
-        // //printf("%s\n", temp);
-        char decr = xor_decrypt(temp);
-        mess[indm++] = decr;
-        if (strcmp(temp, null_term) == 0)
-        {
-            nul_term = 1;
-        }
-        i++;
-        free(temp);
-    }
-    //printf("%s\n", mess);
-}
 char *gen_code(char *msg)
 {
 
@@ -281,6 +253,7 @@ char *gen_code(char *msg)
     // //printf("%s\n", nul_term);
     int x = strlen(nul_term);
     strcat(enc, nul_term);
+    free(nul_term);
 
     char **code = make_blank_code();
 
@@ -305,7 +278,7 @@ char *gen_code(char *msg)
         free(code[i]);
     }
     free(code);
-
+    free(enc);
     return s1;
 }
 
@@ -358,6 +331,7 @@ char *read_code(char *code)
     {
         free(grid[i]);
     }
+    free(null_term);
     free(grid);
     free(s2);
     // free grid
@@ -396,8 +370,11 @@ char *compress(char *code)
         hex[1] = '\0';
         sprintf(hex, "%X", cur_dec);
         out[i] = hex[0];
+        free(cur_bin);
+        free(hex);
     }
     // //printf("%s", out);
+
     return out;
 }
 
@@ -428,7 +405,7 @@ char *decompress(char *code)
             char *ar = malloc(5);
 
             sprintf(ar, "%04d", x);
-            ar[5] = '\0';
+            ar[4] = '\0';
 
             strncat(out, ar, 4);
             free(ar);
@@ -439,42 +416,53 @@ char *decompress(char *code)
             // //printf("%d\n", (int)code[i] - 48);
             int x = toBin((int)code[i] - 48);
             sprintf(ar, "%04d", x);
-            ar[5] = '\0';
+            ar[4] = '\0';
 
             strncat(out, ar, 4);
             free(ar);
         }
     }
-    // //printf("%s\n", out);
+
     return out;
 }
-int min(int a, int b){
-    if(a < b) return a;
+int min(int a, int b)
+{
+    if (a < b)
+        return a;
     return b;
 }
-int calc_ld(char *sandy, char *cima){
+int calc_ld(char *sandy, char *cima)
+{
     // calculate the  Levenshtein distance between two strings
     int sLen = strlen(sandy);
-    int cLen= strlen(cima);
-    int **mat = malloc(sizeof(int *) * (sLen+ 1));
-    for (int i = 0; i < sLen+ 1; i++) {
-        mat[i] = malloc(sizeof(int) * (cLen+ 1));
+    int cLen = strlen(cima);
+    int **mat = malloc(sizeof(int *) * (sLen + 1));
+    for (int i = 0; i < sLen + 1; i++)
+    {
+        mat[i] = malloc(sizeof(int) * (cLen + 1));
     }
 
-    //row is cima
-    for (int j = 0; j < cLen+ 1; j++) {
+    // row is cima
+    for (int j = 0; j < cLen + 1; j++)
+    {
         mat[0][j] = j;
     }
-    //col sandy
-      for (int i = 0; i < sLen+ 1; i++) {
+    // col sandy
+    for (int i = 0; i < sLen + 1; i++)
+    {
         mat[i][0] = i;
     }
-    //if substrings r same at index i j 
-    for (int i = 1; i < sLen+ 1; i++) {
-        for (int j = 1; j < cLen+ 1; j++) {
-            if (sandy[i - 1] == cima[j - 1]) {
+    // if substrings r same at index i j
+    for (int i = 1; i < sLen + 1; i++)
+    {
+        for (int j = 1; j < cLen + 1; j++)
+        {
+            if (sandy[i - 1] == cima[j - 1])
+            {
                 mat[i][j] = mat[i - 1][j - 1];
-            } else {
+            }
+            else
+            {
                 mat[i][j] = 1 + min(mat[i - 1][j - 1], min(mat[i - 1][j], mat[i][j - 1]));
             }
         }
@@ -482,7 +470,8 @@ int calc_ld(char *sandy, char *cima){
 
     int mini = mat[sLen][cLen];
 
-    for (int i = 0; i < sLen+ 1; i++) {
+    for (int i = 0; i < sLen + 1; i++)
+    {
         free(mat[i]);
     }
     free(mat);
