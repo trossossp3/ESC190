@@ -24,7 +24,8 @@
                 }
             ],
             "preLaunchTask": "C/C++: gcc build active file",
-            "miDebuggerPath": "C:\\Strawberry\\c\\bin\\gdb.exe"
+            // "miDebuggerPath": "C:\\Strawberry\\c\\bin\\gdb.exe"
+            "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe"
         }
     ]
 }

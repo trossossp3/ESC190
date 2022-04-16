@@ -1,2 +1,2 @@
 
-        temp[i] = malloc(sizeof
+        {
